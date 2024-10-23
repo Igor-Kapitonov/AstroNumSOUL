@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор Матрицы Судьбы</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>АстроНумерология SOUL</h1>
+        <h3>🌿 С помощью нумерологии, помогу:</h3>
+        <h4>🔹избавиться от того, что тянет назад/вниз</h4> 
+        <h4>🔹обрести себя и свой истинный путь</h4>
+        <h4>🔹отпустить страхи, сомнения, боль</h4>
+        <h4>🔹уверенно проявляться в социуме, в соответствии со своей сутью</h4>
+        <h4>🔹начать жить, а не существовать</h4>
+    </header>
+    <h2>Рассчитайте свою Матрицу Судьбы</h2>
+    <main>
+        <form id="calcForm" method="POST">
+            <label for="birthdate">Введите дату рождения:</label>
+            <input type="date" id="birthdate" name="birthdate" min="1900-01-01" required>
+
+            <label for="email">Введите ваш e-mail:</label>
+            <input type="email" id="email" name="email" placeholder="example@mail.com" pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}" required>
+
+            <div class="button-container">
+                <button type="submit">Рассчитать</button>
+            </div>
+        </form>
+        <div id="result"></div>
+    </main>
+    <footer>
+        <p>© 2024 Калькулятор Матрицы Судьбы</p>
+    </footer>
+    <script>
+        // Устанавливаем максимальную дату как текущую дату
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('birthdate').setAttribute('max', today);
+
+        // AJAX для отправки формы
+        document.getElementById('calcForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Предотвращает стандартное поведение формы
+
+            const birthdateInput = document.getElementById('birthdate').value;
+            const emailInput = document.getElementById('email').value;
+
+            if (!birthdateInput) {
+                alert('Пожалуйста, выберите дату рождения.');
+                return;
+            }
+
+            if (!document.getElementById('email').validity.valid) {
+                alert('Пожалуйста, введите корректный e-mail.');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('birthdate', birthdateInput);
+            formData.append('email', emailInput);
+
+            fetch('send_email.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text()) // Ожидаем текстовый ответ
+            .then(result => {
+                document.getElementById('result').innerHTML = result;
+            })
+            .catch(error => {
+                console.error('Ошибка:', error);
+                document.getElementById('result').innerHTML = 'Ошибка отправки данных. Попробуйте снова.';
+            });
+        });
+    </script>
+</body>
+</html>
